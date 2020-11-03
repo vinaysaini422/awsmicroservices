@@ -1,6 +1,6 @@
 FROM openjdk:latest
 
-ADD userserviceapp-1.0-SNAPSHOT.jar app.jar
+ADD target/userserviceapp-1.0-SNAPSHOT.jar app.jar
 
 ENTRYPOINT ["java","-jar","/app.jar"]
 
