@@ -9,7 +9,7 @@ import com.example.accountmanagement.modal.ResponseModel;
 public class UserServiceImpl implements UserService {
 
 	@Override
-	public void requestPasswordReset(String email, ResponseModel rM) {
+	public void requestPasswordReset(String username, ResponseModel rM) {
 		// TODO Auto-generated method stub
 		rM.setOperationDescription("Mail sent");
 		rM.setOperationResult("Success");

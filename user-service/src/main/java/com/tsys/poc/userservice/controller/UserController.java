@@ -18,12 +18,9 @@ import java.util.List;
 @RequestMapping("/userinfo")
 public class UserController {
 
+	@Autowired
     private UserService userService;
 
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @PostMapping("/create")
     public User create(@RequestBody User user) {

@@ -1,4 +1,4 @@
-package com.example.accountmanagement.controller;
+package com.tsys.poc.userservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,20 +9,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.accountmanagement.modal.Constants;
-import com.example.accountmanagement.modal.PasswordRequestModel;
-import com.example.accountmanagement.modal.PasswordUpdateModel;
-import com.example.accountmanagement.modal.ResponseModel;
-import com.example.accountmanagement.service.UserService;
+import com.tsys.poc.userservice.model.Constants;
+import com.tsys.poc.userservice.model.PasswordRequestModel;
+import com.tsys.poc.userservice.model.PasswordUpdateModel;
+import com.tsys.poc.userservice.model.ResponseModel;
+import com.tsys.poc.userservice.service.UserService;
+
 
 @RestController
-@RequestMapping("/password")
+@RequestMapping("/passwordReset")
 public class PassowrdController {
 
 	@Autowired
 	UserService userService;
 
-	@PostMapping("/reset")
+	@PostMapping("/request")
 	ResponseEntity<ResponseModel> resetPassword(@RequestBody PasswordRequestModel passwordRequestModel) {
 		ResponseModel rM = new ResponseModel();
 
@@ -31,7 +32,7 @@ public class PassowrdController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(rM);
 	}
 
-	@PutMapping("/reset")
+	@PutMapping("/update")
 	ResponseEntity<ResponseModel> updatePassword(@RequestBody PasswordUpdateModel passwordUpdateModel) {
 		ResponseModel rM = new ResponseModel();
 

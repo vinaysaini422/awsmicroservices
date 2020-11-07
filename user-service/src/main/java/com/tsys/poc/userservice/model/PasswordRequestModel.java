@@ -1,4 +1,4 @@
-package com.example.accountmanagement.modal;
+package com.tsys.poc.userservice.model;
 
 import lombok.Getter;
 import lombok.Setter;
