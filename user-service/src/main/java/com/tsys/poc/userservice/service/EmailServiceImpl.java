@@ -1,4 +1,4 @@
-package com.example.accountmanagement.service;
+package com.tsys.poc.userservice.service;
 
 import java.io.IOException;
 import java.util.Date;
@@ -31,11 +31,11 @@ public class EmailServiceImpl implements EmailService {
 
 		Session session = Session.getInstance(props, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication("shubhamsinghal70@gmail.com", "********");
+				return new PasswordAuthentication("awspoctsys@gmail.com", "Abc@12345");
 			}
 		});
 		Message msg = new MimeMessage(session);
-		msg.setFrom(new InternetAddress("shubham@gmail.com", false));
+		msg.setFrom(new InternetAddress("awspoctsys@gmail.com", false));
 
 		msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("shubhamsinghal70@gmail.com"));
 		msg.setSubject("Tutorials point email");

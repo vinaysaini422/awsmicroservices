@@ -38,6 +38,6 @@ public class PassowrdController {
 
 		userService.updatePassword(passwordUpdateModel, rM);
 		rM.setOperationName(Constants.PASSWORD_UPDATE.name());
-		return ResponseEntity.status(HttpStatus.CREATED).body(rM);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(rM);
 	}
 }

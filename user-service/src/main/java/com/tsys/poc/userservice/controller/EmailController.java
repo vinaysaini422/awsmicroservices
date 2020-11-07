@@ -1,4 +1,4 @@
-package com.example.accountmanagement.controller;
+package com.tsys.poc.userservice.controller;
 
 import java.io.IOException;
 
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.accountmanagement.service.EmailService;
+import com.tsys.poc.userservice.service.EmailService;
 
 @RestController
 @RequestMapping("/email")

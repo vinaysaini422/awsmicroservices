@@ -1,4 +1,4 @@
-package com.example.accountmanagement.service;
+package com.tsys.poc.userservice.service;
 
 import java.io.IOException;
 
