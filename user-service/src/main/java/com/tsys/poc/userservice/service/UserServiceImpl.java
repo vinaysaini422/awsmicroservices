@@ -1,5 +1,6 @@
 package com.tsys.poc.userservice.service;
 
+import java.util.Optional;
 import com.tsys.poc.userservice.entity.User;
 import com.tsys.poc.userservice.model.PasswordUpdateModel;
 import com.tsys.poc.userservice.model.ResponseModel;
@@ -22,52 +23,59 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User getById(String id) {
-		return userRepository.getOne(id);
+	public Optional<User> getById(String id) {
+		return userRepository.findById(id);
 	}
 
 	@Override
-	public List<User> getAll() {
+	public Iterable<User> getAll() {
 		return userRepository.findAll();
 	}
 
 	@Override
-	public User delete(User user) {
+	public void delete(User user) {
 		userRepository.delete(user);
-		return user;
 	}
 
 	@Override
-	public User deleteById(String id) {
-		User deletedUser = getById(id);
-		if (deletedUser == null) {
-			throw new EntityNotFoundException("User with username: " + id + " does not exist.");
+	public void deleteById(String id) {
+		Optional<User> deletedUser = getById(id);
+		if (!deletedUser.isPresent()) {
+			throw new EntityNotFoundException("username " + id + " does not exist.");
 		}
-		delete(deletedUser);
-		return deletedUser;
+		delete(deletedUser.get());
 	}
 
 	@Override
 	public User updateUser(User user, User modifiedUser) {
-		User oldUser = getById(user.getUsername());
-		if (oldUser == null) {
+		Optional<User> oldUser = getById(user.getUsername());
+		if (!oldUser.isPresent()) {
 			throw new EntityNotFoundException("User with username: " + user.getUsername() + " does not exist.");
 		}
-		if (!oldUser.equals(user)) {
+		if (!oldUser.get().equals(user)) {
 			throw new EntityNotFoundException("Information of user to be updated is incorrect");
 		}
 		if (!user.getUsername().trim().toLowerCase().equals(modifiedUser.getUsername().trim().toLowerCase())) {
 			throw new PersistenceException("Username of modified user object is not similar to existing user object.");
 		}
-		delete(oldUser);
+		delete(oldUser.get());
 		return add(modifiedUser);
 	}
 
 	@Override
 	public void requestPasswordReset(String username, ResponseModel rM) {
 		// TODO Auto-generated method stub
-		rM.setOperationDescription("Mail sent");
-		rM.setOperationResult("Success");
+		Optional<User>  userOptional = getById(username);
+		if(userOptional.isPresent()) {
+			//Send the mail with the tocken generated
+			rM.setOperationDescription("Mail sent");
+			rM.setOperationResult("Success");
+		} else
+		{
+			rM.setOperationDescription("username not exist");
+			rM.setOperationResult("error");
+		}
+	
 
 	}
 

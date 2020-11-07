@@ -26,7 +26,7 @@ public class PassowrdController {
 	@PostMapping("/request")
 	ResponseEntity<ResponseModel> resetPassword(@RequestBody PasswordRequestModel passwordRequestModel) {
 		ResponseModel rM = new ResponseModel();
-
+		
 		userService.requestPasswordReset(passwordRequestModel.getUsername(), rM);
 		rM.setOperationName(Constants.PASSWORD_RESET.name());
 		return ResponseEntity.status(HttpStatus.CREATED).body(rM);
