@@ -32,9 +32,6 @@ public class UserController {
 
 	@PostMapping("/create")
 	public ResponseEntity<User> create(@RequestBody User user, HttpServletRequest request) {
-		if (!jWTValidator.validateToken(request)) {
-			return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
-		}
 		return new ResponseEntity<>(userService.add(user), HttpStatus.OK);
 	}
 
