@@ -21,69 +21,70 @@ import java.util.Date;
 @Component
 public class JWTValidator {
 
-    private KeyStore keyStore;
-    @Value("${jwt.expiration.time}")
-    private Long jwtExpirationInMillis;
+	private KeyStore keyStore;
+	@Value("${jwt.expiration.time}")
+	private Long jwtExpirationInMillis;
 
-    @PostConstruct
-    public void init() throws AuthException {
-        try {
-            keyStore = KeyStore.getInstance("JKS");
-            InputStream resourceAsStream = getClass().getResourceAsStream("/springblog.jks");
-            keyStore.load(resourceAsStream, "secret".toCharArray());
-        } catch (KeyStoreException | CertificateException | NoSuchAlgorithmException | IOException e) {
-            throw new AuthException("Exception occurred while loading keystore");
-        }
+	@PostConstruct
+	public void init() throws AuthException {
+		try {
+			keyStore = KeyStore.getInstance("JKS");
+			InputStream resourceAsStream = getClass().getResourceAsStream("/springblog.jks");
+			keyStore.load(resourceAsStream, "secret".toCharArray());
+		} catch (KeyStoreException | CertificateException | NoSuchAlgorithmException | IOException e) {
+			throw new AuthException("Exception occurred while loading keystore");
+		}
 
-    }
+	}
 
-    private boolean isValidSignature(String token) throws SignatureException, ExpiredJwtException,
-            UnsupportedJwtException, MalformedJwtException, AuthException, IllegalArgumentException {
-        Jwts.parser().setSigningKey(getPublicKey()).parseClaimsJws(token);
-        return true;
-    }
+	private boolean isValidSignature(String token) throws SignatureException, ExpiredJwtException,
+			UnsupportedJwtException, MalformedJwtException, AuthException, IllegalArgumentException {
+		Jwts.parser().setSigningKey(getPublicKey()).parseClaimsJws(token);
+		return true;
+	}
 
-    private PublicKey getPublicKey() throws AuthException {
-        try {
-            return keyStore.getCertificate("springblog").getPublicKey();
-        } catch (KeyStoreException ex) {
-            throw new AuthException("Exception occured while retriving public key from keystore");
-        }
-    }
+	private PublicKey getPublicKey() throws AuthException {
+		try {
+			return keyStore.getCertificate("springblog").getPublicKey();
+		} catch (KeyStoreException ex) {
+			throw new AuthException("Exception occured while retriving public key from keystore");
+		}
+	}
 
-    public boolean validateToken(HttpServletRequest request) {
+	public boolean validateToken(HttpServletRequest request, String actualUsername) {
 
-        String jwtToken = getJwtFromRequest(request);
+		String jwtToken = getJwtFromRequest(request);
 
-        try {
-            if (isValidSignature(jwtToken)) {
-                Claims claims = Jwts.parser().setSigningKey(getPublicKey()).parseClaimsJws(jwtToken).getBody();
-                Date expiryTime = claims.getExpiration();
-                Date issueTime = claims.getIssuedAt();
+		try {
+			if (isValidSignature(jwtToken)) {
+				Claims claims = Jwts.parser().setSigningKey(getPublicKey()).parseClaimsJws(jwtToken).getBody();
+				Date expiryTime = claims.getExpiration();
+				Date issueTime = claims.getIssuedAt();
+				String username = claims.getSubject();
 
-                if (expiryTime.after(new Date())) {
-                    return true;
-                }
+				if (expiryTime.after(new Date()) && username.equalsIgnoreCase(actualUsername)) {
+					return true;
+				}
 
-            } else {
-                return false;
-            }
+			} else {
+				return false;
+			}
 
-        } catch (Exception e) {
-            return false;
-        }
-        return false;
+		} catch (Exception e) {
+			return false;
+		}
+		return false;
 
-    }
+	}
 
-    private String getJwtFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
+	private String getJwtFromRequest(HttpServletRequest request) {
+		String bearerToken = request.getHeader("Authorization");
 
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
+		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+			return bearerToken.substring(7);
+		}
 
-        return bearerToken;
-    }
+		return bearerToken;
+	}
 
 }

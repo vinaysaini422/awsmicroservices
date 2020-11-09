@@ -17,4 +17,5 @@ eureka:
    
 ribbon:
   ReadTimeout: 60000
-
+zuul:
+  sensitiveHeaders: Cookie,Set-Cookie
