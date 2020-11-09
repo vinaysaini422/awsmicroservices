@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PasswordRequestModel {
-	private String username;
+    private String username;
 }

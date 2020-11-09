@@ -1,7 +1,7 @@
 package com.tsys.poc.userservice.controller;
 
-import javax.servlet.http.HttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,14 +10,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.tsys.poc.userservice.config.JWTValidator;
 import com.tsys.poc.userservice.model.Constants;
 import com.tsys.poc.userservice.model.PasswordRequestModel;
 import com.tsys.poc.userservice.model.PasswordUpdateModel;
 import com.tsys.poc.userservice.model.ResponseModel;
 import com.tsys.poc.userservice.service.UserService;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import lombok.AllArgsConstructor;
 
 
@@ -25,6 +27,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/passwordReset")
 @AllArgsConstructor
 public class PassowrdController {
+
 
 	UserService userService;
 	
@@ -49,5 +52,5 @@ public class PassowrdController {
 		userService.updatePassword(passwordUpdateModel, rM);
 		rM.setOperationName(Constants.PASSWORD_UPDATE.name());
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(rM);
-	}
+  }
 }
