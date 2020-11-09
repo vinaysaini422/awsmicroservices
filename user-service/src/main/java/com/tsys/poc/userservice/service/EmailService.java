@@ -1,13 +1,12 @@
 package com.tsys.poc.userservice.service;
 
-import java.io.IOException;
+import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
-
-import org.springframework.stereotype.Component;
+import java.io.IOException;
 
 @Component
 public interface EmailService {
-	public void sendMail() throws AddressException, MessagingException, IOException ;
+    public void sendMail() throws AddressException, MessagingException, IOException;
 }
