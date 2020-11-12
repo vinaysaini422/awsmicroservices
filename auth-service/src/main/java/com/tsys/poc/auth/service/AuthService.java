@@ -55,14 +55,12 @@ public class AuthService {
 			userRepository.save(user);
 			String activationToken = generateVerificationToken(user);
 
-			mailService
-					.sendMail(
-							NotificationEmail.builder().subject("Please activate your account")
-									.recipient(user.getEmail())
-									.body("Thank you for signing up to Our Application, "
-											+"please click on the below url to activate your account : "
-											+ "http://localhost:8080/api/auth/accountVerification/" + activationToken)
-									.build());
+			mailService.sendMail(
+					NotificationEmail.builder().subject("Please activate your account").recipient(user.getEmail())
+							.body("Thank you for signing up to Our Application, "
+									+ "please click on the below url to activate your account : "
+									+ "http://localhost:8080/api/auth/accountVerification/" + activationToken)
+							.build());
 		} else {
 			throw new AuthException("User Already exists with username or email!");
 		}
@@ -86,7 +84,7 @@ public class AuthService {
 		return user;
 
 	}
-	
+
 	@Transactional
 	private void fetchUserAndEnable(VerificationToken verificationToken) {
 		String userName = verificationToken.getUser().getUsername();
@@ -116,13 +114,13 @@ public class AuthService {
 
 		fetchUserAndEnable(verificationToken.get());
 	}
-	
+
 	public boolean verifyToken(String token) {
 		Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
 		verificationToken.orElseThrow(() -> new AuthException("Invalid Token"));
 
-		Optional<User> optional =fetchUser(verificationToken.get());
-		return optional.isPresent()?true:false;
+		Optional<User> optional = fetchUser(verificationToken.get());
+		return optional.isPresent() ? true : false;
 	}
 
 	public AuthenticationResponse login(LoginRequest loginRequest) {

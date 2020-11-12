@@ -8,17 +8,10 @@ import com.tsys.poc.userservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/userinfo")
@@ -31,13 +24,21 @@ public class UserController {
 	private JWTValidator jWTValidator;
 
 	@PostMapping("/create")
-	public ResponseEntity<User> create(@RequestBody User user, HttpServletRequest request) {
-		return new ResponseEntity<>(userService.add(user), HttpStatus.OK);
+	public ResponseEntity<Response> create(@RequestBody User user, HttpServletRequest request) {
+		Response returnData = new Response();
+		try {
+			returnData.setReturnData(userService.add(user));
+			return new ResponseEntity<>(returnData, HttpStatus.OK);
+		} catch (Exception ex) {
+			returnData.setMessage(ex.getMessage());
+			return new ResponseEntity<>(returnData, HttpStatus.CONFLICT);
+		}
+
 	}
 
 	@GetMapping("/readAll")
 	public ResponseEntity<Iterable<User>> readAll(HttpServletRequest request) {
-		if (!jWTValidator.validateToken(request)) {
+		if (!jWTValidator.validateToken(request,"shubham")) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		return new ResponseEntity<>(userService.getAll(), HttpStatus.OK);
@@ -47,9 +48,9 @@ public class UserController {
 	public ResponseEntity<Response> readByUsername(@PathVariable(name = "username") String username,
 			HttpServletRequest request) {
 		Response returnData = new Response();
-		if (!jWTValidator.validateToken(request)) {
+		if (!jWTValidator.validateToken(request,username)) {
 			returnData.setMessage("Not a valid user");
-			return new ResponseEntity<Response>(HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>(returnData, HttpStatus.UNAUTHORIZED);
 		}
 		Optional<User> user = userService.getById(username);
 		if (user.isPresent()) {
@@ -63,16 +64,16 @@ public class UserController {
 	}
 
 	@PutMapping("/update")
-	public ResponseEntity<Response> update(@RequestBody UserInfo userInfo, HttpServletRequest request) {
+	public ResponseEntity<Response> update(@RequestBody User user, HttpServletRequest request) {
 		Response returnData = new Response();
-		if (!jWTValidator.validateToken(request)) {
+		if (!jWTValidator.validateToken(request,user.getUsername())) {
 			returnData.setMessage("Not a valid user");
-			return new ResponseEntity<Response>(HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>(returnData, HttpStatus.UNAUTHORIZED);
 		}
 		try {
-			userService.updateUser(userInfo.getUser(), userInfo.getUpdatedUser());
+			userService.updateUser(user);
 			returnData.setMessage("Updated Successfully");
-			returnData.setReturnData(userInfo.getUpdatedUser());
+			returnData.setReturnData(user);
 			return ResponseEntity.status(HttpStatus.OK).body(returnData);
 
 		} catch (Exception e) {
@@ -85,9 +86,9 @@ public class UserController {
 	public ResponseEntity<Response> deleteByUsername(@PathVariable(name = "username") String username,
 			HttpServletRequest request) {
 		Response returnData = new Response();
-		if (!jWTValidator.validateToken(request)) {
+		if (!jWTValidator.validateToken(request,username)) {
 			returnData.setMessage("Not a valid user");
-			return new ResponseEntity<Response>(HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>(returnData, HttpStatus.UNAUTHORIZED);
 		}
 		try {
 			userService.deleteById(username);

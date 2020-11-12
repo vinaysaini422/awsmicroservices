@@ -1,7 +1,7 @@
 FROM openjdk:latest
 
-ADD target/serviceregistryapp-1.0-SNAPSHOT app.jar
+ADD target/serviceregistryapp-1.0-SNAPSHOT.jar serviceregistryapp.jar
 
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java","-jar","/serviceregistryapp.jar"]
 
-EXPOSE 8081
+EXPOSE 8761
